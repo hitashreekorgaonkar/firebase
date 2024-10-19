@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   getFirestore,
+  onSnapshot,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -26,19 +27,15 @@ const db = getFirestore();
 // collection ref
 const colRef = collection(db, "books");
 
-// get collection data
-getDocs(colRef)
-  .then((snapshot) => {
-    let books = [];
-
-    snapshot.docs.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id });
-    });
-    console.log(books);
-  })
-  .catch((err) => {
-    console.log(err.message);
+// real time collection data
+onSnapshot(colRef, (snapshot) => {
+  //In Firebase, onSnapshot is a real-time listener used to receive updates whenever a Firestore document or collection changes.
+  let books = [];
+  snapshot.docs.forEach((doc) => {
+    books.push({ ...doc.data(), id: doc.id });
   });
+  console.log(books);
+});
 
 // adding documents
 const addBookForm = document.querySelector(".add");
