@@ -13,6 +13,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBm21-Wtc1s4mnLBMpcTlbT8i3eZwLsjb8",
@@ -28,6 +29,7 @@ initializeApp(firebaseConfig);
 
 // Init services
 const db = getFirestore();
+const auth = getAuth();
 
 // collection ref
 const colRef = collection(db, "books");
@@ -86,4 +88,20 @@ updateForm.addEventListener("submit", (e) => {
   updateDoc(docRef, { title: "update title" }).then(() => {
     updateForm.reset();
   });
+});
+
+// signing users up
+const signupForm = document.querySelector(".signup");
+signupForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const email = signupForm.email.value;
+  const password = signupForm.password.value;
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log("user created", cred.user);
+      signupForm.reset();
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 });
