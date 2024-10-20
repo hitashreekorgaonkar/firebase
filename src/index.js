@@ -10,6 +10,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -75,4 +76,14 @@ deleteBookForm.addEventListener("submit", (e) => {
 const docRef = doc(db, "books", "weJY0DIDnG4xdu7M7inU");
 onSnapshot(docRef, (doc) => {
   console.log(doc.data(), doc.id);
+});
+
+// updating a document
+const updateForm = document.querySelector(".update");
+updateForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const docRef = doc(db, "books", updateForm.id.value);
+  updateDoc(docRef, { title: "update title" }).then(() => {
+    updateForm.reset();
+  });
 });
