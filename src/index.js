@@ -4,9 +4,12 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDocs,
   getFirestore,
   onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  where,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -27,8 +30,15 @@ const db = getFirestore();
 // collection ref
 const colRef = collection(db, "books");
 
+// queries
+const q = query(
+  colRef,
+  // where("author", "==", "Abhijit Majumder"),
+  orderBy("createdAt")
+);
+
 // real time collection data
-onSnapshot(colRef, (snapshot) => {
+onSnapshot(q, (snapshot) => {
   //In Firebase, onSnapshot is a real-time listener used to receive updates whenever a Firestore document or collection changes.
   let books = [];
   snapshot.docs.forEach((doc) => {
@@ -44,6 +54,7 @@ addBookForm.addEventListener("submit", (e) => {
   addDoc(colRef, {
     title: addBookForm.title.value,
     author: addBookForm.author.value,
+    createdAt: serverTimestamp(),
   }).then(() => {
     addBookForm.reset();
   });
