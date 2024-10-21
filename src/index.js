@@ -48,7 +48,7 @@ const q = query(
 );
 
 // real time collection data
-onSnapshot(q, (snapshot) => {
+const unsubCol = onSnapshot(q, (snapshot) => {
   //In Firebase, onSnapshot is a real-time listener used to receive updates whenever a Firestore document or collection changes.
   let books = [];
   snapshot.docs.forEach((doc) => {
@@ -82,7 +82,7 @@ deleteBookForm.addEventListener("submit", (e) => {
 
 //  get a single document
 const docRef = doc(db, "books", "weJY0DIDnG4xdu7M7inU");
-onSnapshot(docRef, (doc) => {
+const unsubDoc = onSnapshot(docRef, (doc) => {
   console.log(doc.data(), doc.id);
 });
 
@@ -141,6 +141,15 @@ logoutButton.addEventListener("click", () => {
 });
 
 // subscribing to auth changes
-onAuthStateChanged(auth, (user) => {
+const unsubAuth = onAuthStateChanged(auth, (user) => {
   console.log("user status changed: ", user);
+});
+
+// unsubscribing from changes (auth & db)
+const unsubButton = document.querySelector(".unsub");
+unsubButton.addEventListener("click", () => {
+  console.log("Unsubscribing");
+  unsubCol();
+  unsubDoc();
+  unsubAuth();
 });
